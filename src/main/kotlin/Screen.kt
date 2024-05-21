@@ -1,4 +1,4 @@
-sealed class Screen: Startable, Navigatable {
+sealed class Screen : Startable, Navigatable {
     open val screenName: String? = null
 }
 
@@ -16,7 +16,7 @@ interface Navigatable {
 }
 
 class MainScreen : Screen() {
-    override val screenName = "Меню: "
+    override val screenName = "* Меню *"
     private var archiveList = listOf<Archive>()
     override fun fillScreen(obj: Any) {
         if (obj !is List<*>) {
@@ -58,10 +58,11 @@ class MainScreen : Screen() {
 
 class SecondScreen : Screen() {
     private var currentArchive: Archive? = null
-    override val screenName by lazy { "* Архив ${currentArchive?.archiveName} *" } //делегат - значение создастся, когда будет произведен первый вызов.
+    override val screenName by lazy { "\n* Архив ${currentArchive?.archiveName} *" } //делегат - значение создастся, когда будет произведен первый вызов.
 
     override fun fillScreen(obj: Any) {
-        currentArchive = obj as? Archive //если архив, то обжект не налл, если что-то другое, то налл.
+        currentArchive =
+            obj as? Archive //если архив, то обжект не налл, если что-то другое, то налл.
     }
 
 
@@ -79,10 +80,47 @@ class SecondScreen : Screen() {
 
         when (NotepadDispatcher.callOption("Введите номер меню: ")) {
             1 -> onCreate.invoke()
-            2 -> nextScreen.invoke(2)
+            2 -> nextScreen.invoke(null)
             3 -> onExit.invoke()
             else -> onError.invoke("Такого номера меню нет.")
         }
+
+    }
+
+}
+
+class NotesListScreen : Screen() {
+    private  var currentArchive: Archive? = null
+    override val screenName = "* Список заметок *"
+
+    private val notesList: MutableList<Notes>? by lazy { currentArchive?.archiveNotes }
+
+    override fun fillScreen(obj: Any) {
+        currentArchive = obj as? Archive
+//        if (obj is Archive) {
+//            currentArchive = obj
+//        }
+
+    }
+
+    override fun navigate(
+        nextScreen: (Int?) -> Unit,
+        onCreate: () -> Unit,
+        onExit: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+
+        println(screenName)
+
+        println("${currentArchive}")
+
+        notesList?.forEachIndexed { position, noteName ->
+            println("${position + 1}. ${noteName.heading}")
+        }
+
+        println("Назад")
+        val option = NotepadDispatcher.callOption("Введите номер меню: ")
+//        when(option)
 
     }
 

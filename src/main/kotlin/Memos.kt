@@ -14,6 +14,7 @@ class Memos {
             when (currentScreen) {
                 is MainScreen -> currentScreen.fillScreen(archiveList)
                 is SecondScreen -> Unit
+                is NotesListScreen -> Unit
             }
 
             currentScreen.navigate(
@@ -35,6 +36,8 @@ class Memos {
                                 }
                             }
                         }
+
+                        is NotesListScreen -> Unit
                     }
                 },
                 onExit = {
@@ -62,39 +65,20 @@ class Memos {
                     archiveIndex = p
                     add(screen)
                 }
-
             }
 
             is SecondScreen -> {
-                println("*** ТУТ ПОКА ЗАГЛУШКА ***")
-                navigation
+                navigation.apply {
+                    val screen = NotesListScreen()
+                    screen.fillScreen(archiveList[archiveIndex])
+                    add(screen)
+                }
             }
 
-            else -> navigation
+            is NotesListScreen -> navigation
         }
 
-
     }
-
-//    private fun doOnCreate(currentScreen: Screen) = { pointer: Int? ->
-//        when(currentScreen) {
-//            is MainScreen -> {
-//                val archive = NotepadDispatcher.makeNewArchive()
-//                archiveList = archiveList.apply {
-//                    add(archive)
-//                }
-//            }
-//            is SecondScreen -> {
-//                val note = NotepadDispatcher.makeNewNote()
-//                val p = pointer ?: -1
-//                archiveList.getOrNull(p)?.apply {
-//                    val list = archiveNotes.addLast(note)
-////                    copy(archiveNotes = list)
-//                }
-//            }
-//        }
-//
-//    }
 
 
 }

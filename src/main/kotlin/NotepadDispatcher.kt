@@ -21,16 +21,16 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
     }
 
     fun makeNewArchive(): Archive {
-        var newArchive = callInput("Введите название архива: ")
+        var newArchive = callInput("\nВведите название архива: ")
         newArchive = checkStringEmpty(newArchive)
         return Archive(newArchive)
     }
 
     fun makeNewNote(): Notes {
-        var header = callInput("Введите заголовок: ")
+        var header = callInput("\nВведите заголовок: ")
         header = checkStringEmpty(header)
 
-        var content = callInput("Введите текст заметки: ")
+        var content = callInput("\nВведите текст заметки: ")
         content = checkStringEmpty(content)
 
         return Notes(header, content)
