@@ -1,7 +1,7 @@
 
 data class Archive (
     val archiveName: String,
-    val archiveNotes: List<Notes> = listOf()
+    val archiveNotes: MutableList<Notes> = mutableListOf()
 
 )
 

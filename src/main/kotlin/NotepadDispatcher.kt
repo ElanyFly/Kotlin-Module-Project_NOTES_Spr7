@@ -51,6 +51,4 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
         }
         return scannerInput
     }
-
-
 }

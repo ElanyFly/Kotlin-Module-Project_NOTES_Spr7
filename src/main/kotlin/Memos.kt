@@ -1,70 +1,101 @@
 import kotlin.properties.Delegates
 
 class Memos {
-    private var navigation = listOf<Screen>(MainScreen())
-    private var archiveList = listOf<Archive>()
-    private var notesMap = mapOf<Archive, List<Notes>>()
+    private var navigation = mutableListOf<Screen>(MainScreen())
+    private var archiveList = mutableListOf<Archive>()
+
+    //    private var notesMap = mapOf<Archive, List<Notes>>()
+//    private var notesMap = archiveList.map { it.archiveName to it.archiveNotes }.toMap()
+    private var archiveIndex: Int = -1
 
     fun run() {
         while (navigation.isNotEmpty()) {
             val currentScreen = navigation.lastOrNull() ?: return
-            currentScreen.fillScreen(archiveList)
+            when (currentScreen) {
+                is MainScreen -> currentScreen.fillScreen(archiveList)
+                is SecondScreen -> Unit
+            }
+
             currentScreen.navigate(
-                nextScreen = {
-                             println(archiveList.get(it ?: 0))
-                },
+                nextScreen = doOnNextScreen(currentScreen),
                 onCreate = {
-                    val archive = NotepadDispatcher.makeNewArchive()
-                    archiveList = archiveList.toMutableList().apply {
-                        add(archive)
-                    }.toList()
+                    when (currentScreen) {
+                        is MainScreen -> {
+                            val archive = NotepadDispatcher.makeNewArchive()
+                            archiveList = archiveList.apply {
+                                add(archive)
+                            }
+                        }
+
+                        is SecondScreen -> {
+                            val note = NotepadDispatcher.makeNewNote()
+                            archiveList.getOrNull(archiveIndex)?.apply {
+                                archiveNotes.apply {
+                                    addLast(note)
+                                }
+                            }
+                        }
+                    }
                 },
                 onExit = {
-                    navigation = navigation.toMutableList().apply {
+                    navigation = navigation.apply {
                         removeLast()
-                    }.toList()
+                    }
                 },
                 onError = {
                     println(it)
                 },
             )
-
         }
         println("Выход из программы")
     }
 
-}
+    private fun doOnNextScreen(currentScreen: Screen) = { pointer: Int? ->
+        navigation = when (currentScreen) {
+            is MainScreen -> {
+                println("${pointer?.let { it1 -> archiveList.get(it1) }}")
 
-class MainScreen : Screen() {
-    private var archiveList = listOf<Archive>()
-    override fun fillScreen(list: List<Any>) {
-        archiveList = list.filterIsInstance<Archive>()
+                navigation.apply {
+                    val screen = SecondScreen()
+                    val p = pointer ?: return@apply
+                    screen.fillScreen(archiveList[p])
+                    archiveIndex = p
+                    add(screen)
+                }
+
+            }
+
+            is SecondScreen -> {
+                println("*** ТУТ ПОКА ЗАГЛУШКА ***")
+                navigation
+            }
+
+            else -> navigation
+        }
+
 
     }
 
-    override fun navigate(
-        nextScreen: (Int?) -> Unit,
-        onCreate: () -> Unit,
-        onExit: () -> Unit,
-        onError: (String) -> Unit
-    ) {
-        val onExitOption = archiveList.size + 2
-        println("1. Создать архив")
-        archiveList.forEachIndexed { position, archive ->
-            println("${position + 2}. ${archive.archiveName}")
-        }
-        println("$onExitOption. Выход")
-        val archiveOptions = if (archiveList.isNotEmpty()) {
-            2..archiveList.size+2
-        } else {
-            Int.MIN_VALUE.. Int.MIN_VALUE
-        }
-        val option = NotepadDispatcher.callOption("Введите exit")
-        when (option) {
-            1 -> onCreate.invoke()
-            in archiveOptions -> nextScreen.invoke(option-2)
-            onExitOption -> onExit.invoke()
-            else -> onError.invoke("Такого номера меню нет.")
-        }
-    }
+//    private fun doOnCreate(currentScreen: Screen) = { pointer: Int? ->
+//        when(currentScreen) {
+//            is MainScreen -> {
+//                val archive = NotepadDispatcher.makeNewArchive()
+//                archiveList = archiveList.apply {
+//                    add(archive)
+//                }
+//            }
+//            is SecondScreen -> {
+//                val note = NotepadDispatcher.makeNewNote()
+//                val p = pointer ?: -1
+//                archiveList.getOrNull(p)?.apply {
+//                    val list = archiveNotes.addLast(note)
+////                    copy(archiveNotes = list)
+//                }
+//            }
+//        }
+//
+//    }
+
+
 }
+
