@@ -33,6 +33,7 @@ class MainScreen : Screen() {
     ) {
         println(screenName)
         val onExitOption = archiveList.size + 2
+
         println("1. Создать архив")
 
         archiveList.forEachIndexed { position, archive ->
@@ -90,17 +91,13 @@ class SecondScreen : Screen() {
 }
 
 class NotesListScreen : Screen() {
-    private  var currentArchive: Archive? = null
-    override val screenName = "* Список заметок *"
+    private var currentArchive: Archive? = null
+    override val screenName = "\n* Список заметок *"
 
     private val notesList: MutableList<Notes>? by lazy { currentArchive?.archiveNotes }
 
     override fun fillScreen(obj: Any) {
         currentArchive = obj as? Archive
-//        if (obj is Archive) {
-//            currentArchive = obj
-//        }
-
     }
 
     override fun navigate(
@@ -109,6 +106,8 @@ class NotesListScreen : Screen() {
         onExit: () -> Unit,
         onError: (String) -> Unit
     ) {
+        val onExitOption = notesList?.size?.plus(1)
+        val notesListRange = notesList?.size ?: Int.MIN_VALUE
 
         println(screenName)
 
@@ -118,10 +117,55 @@ class NotesListScreen : Screen() {
             println("${position + 1}. ${noteName.heading}")
         }
 
-        println("Назад")
-        val option = NotepadDispatcher.callOption("Введите номер меню: ")
-//        when(option)
+        val notesOption = if (notesList?.isNotEmpty() == true) {
+            1..notesListRange
+        } else {
+            Int.MIN_VALUE..Int.MIN_VALUE
+        }
 
+        println("$onExitOption. Назад")
+
+        val option = NotepadDispatcher.callOption("Введите номер меню: ")
+        when (option) {
+            in notesOption -> nextScreen.invoke(option-1)
+            onExitOption -> onExit.invoke()
+            else -> onError.invoke("Такого номера меню нет.")
+        }
+    }
+}
+
+class ShowNoteScreen : Screen() {
+    private var thisNote: Notes? = null
+    override val screenName = "\n* Заметка *"
+    override fun fillScreen(obj: Any) {
+        thisNote = obj as? Notes
+    }
+
+    override fun navigate(
+        nextScreen: (Int?) -> Unit,
+        onCreate: () -> Unit,
+        onExit: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val contentList: List<String>? = thisNote?.content?.chunked(35)
+
+        println(screenName)
+
+        println("Заголовок: ${thisNote?.heading}")
+        println("***")
+        println("Содержание заметки: ")
+        contentList?.forEach {
+            print("$it\n")
+        }
+//        println("${thisNote.content}")
+
+        println("1. Назад")
+
+        val option = NotepadDispatcher.callOption("Введите номер меню: ")
+        when(option) {
+            1 -> onExit.invoke()
+            else -> onError.invoke("Такого номера меню нет.")
+        }
     }
 
 }

@@ -4,8 +4,6 @@ class Memos {
     private var navigation = mutableListOf<Screen>(MainScreen())
     private var archiveList = mutableListOf<Archive>()
 
-    //    private var notesMap = mapOf<Archive, List<Notes>>()
-//    private var notesMap = archiveList.map { it.archiveName to it.archiveNotes }.toMap()
     private var archiveIndex: Int = -1
 
     fun run() {
@@ -15,6 +13,7 @@ class Memos {
                 is MainScreen -> currentScreen.fillScreen(archiveList)
                 is SecondScreen -> Unit
                 is NotesListScreen -> Unit
+                is ShowNoteScreen -> Unit
             }
 
             currentScreen.navigate(
@@ -38,6 +37,7 @@ class Memos {
                         }
 
                         is NotesListScreen -> Unit
+                        is ShowNoteScreen -> Unit
                     }
                 },
                 onExit = {
@@ -75,7 +75,15 @@ class Memos {
                 }
             }
 
-            is NotesListScreen -> navigation
+            is NotesListScreen -> {
+                navigation.apply {
+                    val screen = ShowNoteScreen()
+                    val p = pointer ?: return@apply
+                    screen.fillScreen(archiveList[archiveIndex].archiveNotes[pointer])
+                    add(screen)
+                }
+            }
+            is ShowNoteScreen -> navigation
         }
 
     }
