@@ -1,3 +1,5 @@
+import java.util.Locale
+
 sealed class Screen : Startable, Navigatable {
     open val screenName: String? = null
 }
@@ -151,12 +153,13 @@ class ShowNoteScreen : Screen() {
 
         println(screenName)
 
-        println("Заголовок: ${thisNote?.heading}")
+        println("***\t***\n")
+        println("${thisNote?.heading?.uppercase()}")
+
+
+        println("${thisNote?.content}\n")
+
         println("***\t***")
-        println("Содержание заметки: ")
-
-        println("${thisNote?.content}")
-
         println("1. ${Menu.BACK.text}")
 
         val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)

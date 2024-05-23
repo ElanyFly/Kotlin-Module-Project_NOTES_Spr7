@@ -21,7 +21,7 @@ class Memos {
                 onCreate = {
                     when (currentScreen) {
                         is MainScreen -> {
-                            val archive = NotepadDispatcher.makeNewArchive()
+                            val archive: Archive = NotepadDispatcher.makeNewArchive()
                             archiveList = archiveList.apply {
                                 add(archive)
                             }

@@ -9,6 +9,7 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
         while (option == null) {
             println(message)
             val result = runCatching {
+//                readlnOrNull()?.toIntOrNull()
                 scanInput.nextInt()
             }
             if (result.isFailure) {
@@ -17,6 +18,7 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
 
             option = result.getOrNull()
         }
+        scanInput.nextLine()
         return option
     }
 
@@ -40,7 +42,15 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
 
      fun callInput(message: String): String {
         println(message)
-        return this.scanInput.nextLine().trim()
+         clearInput()
+        val input = scanInput.nextLine()
+        return input.trim()
+    }
+
+    fun clearInput(){
+       /* if (scanInput.hasNext()){
+            scanInput.nextLine()
+        }*/
     }
 
      fun checkStringEmpty(input: String): String {
