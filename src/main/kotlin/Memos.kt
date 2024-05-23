@@ -56,7 +56,7 @@ class Memos {
     private fun doOnNextScreen(currentScreen: Screen) = { pointer: Int? ->
         navigation = when (currentScreen) {
             is MainScreen -> {
-                println("${pointer?.let { it1 -> archiveList.get(it1) }}")
+//                println("${pointer?.let { it1 -> archiveList.get(it1) }}")
 
                 navigation.apply {
                     val screen = SecondScreen()

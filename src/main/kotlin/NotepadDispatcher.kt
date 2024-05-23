@@ -2,7 +2,7 @@ import java.util.Scanner
 
 object NotepadDispatcher {  //не создавать инстанс, а напрямую обращаться к нему
 
-    val scanInput = Scanner(System.`in`)
+    private val scanInput = Scanner(System.`in`)
 
     fun callOption(message: String): Int {
         var option: Int? = null
@@ -21,32 +21,32 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
     }
 
     fun makeNewArchive(): Archive {
-        var newArchive = callInput("\nВведите название архива: ")
+        var newArchive = callInput("\nВведите название архива:")
         newArchive = checkStringEmpty(newArchive)
+
         return Archive(newArchive)
     }
 
     fun makeNewNote(): Notes {
-        var header = callInput("\nВведите заголовок: ")
+        var header = callInput("\nВведите заголовок:")
         header = checkStringEmpty(header)
 
-        var content = callInput("\nВведите текст заметки: ")
+        var content = callInput("\nВведите текст заметки:")
         content = checkStringEmpty(content)
 
         return Notes(header, content)
     }
 
 
-    private fun callInput(message: String): String {
+     fun callInput(message: String): String {
         println(message)
-        val scanInput = scanInput.nextLine()
-        return scanInput.trim()
+        return this.scanInput.nextLine().trim()
     }
 
-    private fun checkStringEmpty(input: String): String {
+     fun checkStringEmpty(input: String): String {
         var scannerInput = input
         while (scannerInput.isEmpty()) {
-            println("Поле не может быть пустым")  //нужно вывести заголовок после каждой неверной попытки
+            println("Поле не может быть пустым")
             scannerInput = scanInput.nextLine().trim()
         }
         return scannerInput

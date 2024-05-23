@@ -34,7 +34,7 @@ class MainScreen : Screen() {
         println(screenName)
         val onExitOption = archiveList.size + 2
 
-        println("1. Создать архив")
+        println("1. ${Menu.NEW_ARCHIVE.text}")
 
         archiveList.forEachIndexed { position, archive ->
             println("${position + 2}. ${archive.archiveName}")
@@ -46,13 +46,13 @@ class MainScreen : Screen() {
             Int.MIN_VALUE..Int.MIN_VALUE
         }
 
-        println("$onExitOption. Выход")
+        println("$onExitOption. ${Menu.EXIT.text}")
 
-        when (val option = NotepadDispatcher.callOption("Введите номер меню: ")) {
+        when (val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)) {
             1 -> onCreate.invoke()
             in archiveOptions -> nextScreen.invoke(option - 2)
             onExitOption -> onExit.invoke()
-            else -> onError.invoke("Такого номера меню нет.")
+            else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
     }
 }
@@ -75,15 +75,15 @@ class SecondScreen : Screen() {
     ) {
 
         println(screenName)
-        println("1. Создать заметку")
-        println("2. Выбрать заметку")
-        println("3. Назад")
+        println("1. ${Menu.NEW_NOTE.text}")
+        println("2. ${Menu.CHOOSE_NOTE.text}")
+        println("3. ${Menu.BACK.text}")
 
-        when (NotepadDispatcher.callOption("Введите номер меню: ")) {
+        when (NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)) {
             1 -> onCreate.invoke()
             2 -> nextScreen.invoke(null)
             3 -> onExit.invoke()
-            else -> onError.invoke("Такого номера меню нет.")
+            else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
 
     }
@@ -111,7 +111,7 @@ class NotesListScreen : Screen() {
 
         println(screenName)
 
-        println("${currentArchive}")
+//        println("${currentArchive}")
 
         notesList?.forEachIndexed { position, noteName ->
             println("${position + 1}. ${noteName.heading}")
@@ -123,13 +123,13 @@ class NotesListScreen : Screen() {
             Int.MIN_VALUE..Int.MIN_VALUE
         }
 
-        println("$onExitOption. Назад")
+        println("$onExitOption. ${Menu.BACK.text}")
 
-        val option = NotepadDispatcher.callOption("Введите номер меню: ")
+        val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)
         when (option) {
             in notesOption -> nextScreen.invoke(option-1)
             onExitOption -> onExit.invoke()
-            else -> onError.invoke("Такого номера меню нет.")
+            else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
     }
 }
@@ -152,19 +152,17 @@ class ShowNoteScreen : Screen() {
         println(screenName)
 
         println("Заголовок: ${thisNote?.heading}")
-        println("***")
+        println("***\t***")
         println("Содержание заметки: ")
-        contentList?.forEach {
-            print("$it\n")
-        }
-//        println("${thisNote.content}")
 
-        println("1. Назад")
+        println("${thisNote?.content}")
 
-        val option = NotepadDispatcher.callOption("Введите номер меню: ")
+        println("1. ${Menu.BACK.text}")
+
+        val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)
         when(option) {
             1 -> onExit.invoke()
-            else -> onError.invoke("Такого номера меню нет.")
+            else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
     }
 
