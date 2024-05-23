@@ -1,5 +1,3 @@
-import kotlin.properties.Delegates
-
 class Memos {
     private var navigation = mutableListOf<Screen>(MainScreen())
     private var archiveList = mutableListOf<Archive>()
@@ -50,13 +48,12 @@ class Memos {
                 },
             )
         }
-        println("Выход из программы")
+        println(Message.EXIT_PROGRAM.text)
     }
 
     private fun doOnNextScreen(currentScreen: Screen) = { pointer: Int? ->
         navigation = when (currentScreen) {
             is MainScreen -> {
-//                println("${pointer?.let { it1 -> archiveList.get(it1) }}")
 
                 navigation.apply {
                     val screen = SecondScreen()

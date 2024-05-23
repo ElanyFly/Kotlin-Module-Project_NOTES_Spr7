@@ -9,11 +9,10 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
         while (option == null) {
             println(message)
             val result = runCatching {
-//                readlnOrNull()?.toIntOrNull()
                 scanInput.nextInt()
             }
             if (result.isFailure) {
-                println("Неверный ввод - ${scanInput.next()}.")
+                println("${Message.WRONG_INPUT.text} ${scanInput.next()}.")
             }
 
             option = result.getOrNull()
@@ -23,40 +22,32 @@ object NotepadDispatcher {  //не создавать инстанс, а нап�
     }
 
     fun makeNewArchive(): Archive {
-        var newArchive = callInput("\nВведите название архива:")
+        var newArchive = callInput(Message.NEW_ARCHIVE.text)
         newArchive = checkStringEmpty(newArchive)
 
         return Archive(newArchive)
     }
 
     fun makeNewNote(): Notes {
-        var header = callInput("\nВведите заголовок:")
+        var header = callInput(Message.NEW_HEADER.text)
         header = checkStringEmpty(header)
 
-        var content = callInput("\nВведите текст заметки:")
+        var content = callInput(Message.ADD_CONTENT.text)
         content = checkStringEmpty(content)
 
         return Notes(header, content)
     }
 
-
-     fun callInput(message: String): String {
+    private fun callInput(message: String): String {
         println(message)
-         clearInput()
         val input = scanInput.nextLine()
         return input.trim()
     }
 
-    fun clearInput(){
-       /* if (scanInput.hasNext()){
-            scanInput.nextLine()
-        }*/
-    }
-
-     fun checkStringEmpty(input: String): String {
+    private fun checkStringEmpty(input: String): String {
         var scannerInput = input
         while (scannerInput.isEmpty()) {
-            println("Поле не может быть пустым")
+            println(Message.EMPTY_FIELD.text)
             scannerInput = scanInput.nextLine().trim()
         }
         return scannerInput
