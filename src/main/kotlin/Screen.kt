@@ -1,5 +1,3 @@
-import java.util.Locale
-
 sealed class Screen : Startable, Navigatable {
     open val screenName: String? = null
 }
@@ -68,7 +66,6 @@ class SecondScreen : Screen() {
             obj as? Archive //если архив, то обжект не налл, если что-то другое, то налл.
     }
 
-
     override fun navigate(
         nextScreen: (Int?) -> Unit,
         onCreate: () -> Unit,
@@ -87,9 +84,7 @@ class SecondScreen : Screen() {
             3 -> onExit.invoke()
             else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
-
     }
-
 }
 
 class NotesListScreen : Screen() {
@@ -113,8 +108,6 @@ class NotesListScreen : Screen() {
 
         println(screenName)
 
-//        println("${currentArchive}")
-
         notesList?.forEachIndexed { position, noteName ->
             println("${position + 1}. ${noteName.heading}")
         }
@@ -127,9 +120,8 @@ class NotesListScreen : Screen() {
 
         println("$onExitOption. ${Menu.BACK.text}")
 
-        val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)
-        when (option) {
-            in notesOption -> nextScreen.invoke(option-1)
+        when (val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)) {
+            in notesOption -> nextScreen.invoke(option - 1)
             onExitOption -> onExit.invoke()
             else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
@@ -149,8 +141,6 @@ class ShowNoteScreen : Screen() {
         onExit: () -> Unit,
         onError: (String) -> Unit
     ) {
-        val contentList: List<String>? = thisNote?.content?.chunked(35)
-
         println(screenName)
 
         println("***\t***\n")
@@ -162,11 +152,9 @@ class ShowNoteScreen : Screen() {
         println("***\t***")
         println("1. ${Menu.BACK.text}")
 
-        val option = NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)
-        when(option) {
+        when (NotepadDispatcher.callOption(Message.INSERT_NUMBER.text)) {
             1 -> onExit.invoke()
             else -> onError.invoke(Message.ERROR_MESSAGE.text)
         }
     }
-
 }

@@ -76,15 +76,12 @@ class Memos {
                 navigation.apply {
                     val screen = ShowNoteScreen()
                     val p = pointer ?: return@apply
-                    screen.fillScreen(archiveList[archiveIndex].archiveNotes[pointer])
+                    screen.fillScreen(archiveList[archiveIndex].archiveNotes[p])
                     add(screen)
                 }
             }
+
             is ShowNoteScreen -> navigation
         }
-
     }
-
-
 }
-
